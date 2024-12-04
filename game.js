@@ -40,8 +40,8 @@ function preload(){
 
   this.load.image('isa1', 'assets/entities/isa.png')
   this.load.image('isa2', 'assets/entities/isaandando.png')
-  this.load.image('enemigo1', 'assets/entities/negroQuieto.png')
-  this.load.image('enemigo1-2', 'assets/entities/negroAndando.png')
+  this.load.image('enemigo1', 'assets/entities/box1.1-right1.png')
+  this.load.image('enemigo1-2', 'assets/entities/box1.1-left1.png')
 
 }
 
@@ -156,5 +156,8 @@ if(this.enemigo1 && this.enemigo1.body){
         this.enemigo1.flipX = false; // Girar a la derecha
     }
 }
-  
+  this.cameras.main.startFollow(this.isa);
+
+  // Limitar el movimiento de la cámara para que no se salga del mundo
+  this.cameras.main.setBounds(0, 0, 5000, 244); 
 }
