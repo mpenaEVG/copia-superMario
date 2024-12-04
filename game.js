@@ -63,8 +63,8 @@ function create(){
     .setScale(1)
     .refreshBody()
 
-  this.enemigo1 =  this.physics.add.sprite(20,100,'enemigo1')
-    .setOrigin(1,-2)
+  this.enemigo1 =  this.physics.add.sprite(0,200,'enemigo1')
+    .setOrigin(0.5,1)
     .setScale(0.50)
   this.enemigo1.setCollideWorldBounds(true)
   this.enemigo1.setVelocityX(100)
@@ -72,7 +72,7 @@ function create(){
 
 
   this.isa =  this.physics.add.sprite(20,100,'isa1')
-    .setOrigin(-8,0)
+    .setOrigin(0.5,1)
     .setScale(0.50)
 
   this.isa.setCollideWorldBounds(true)
@@ -105,7 +105,7 @@ function create(){
   this.enemigo1.play('enemigo1-walk')
 
   this.physics.add.collider(this.isa,this.ground)
-  this.physics.add.collider(this.isa,this.tuberia)
+  this.physics.add.collider(this.isa, this.tuberia, onPipeCollision, null, this);
   this.physics.add.collider(this.enemigo1,this.tuberia)
   this.physics.add.collider(this.enemigo1,this.ground)
   this.physics.add.overlap(this.isa, this.enemigo1, hitEnemy, null, this);
@@ -113,11 +113,18 @@ function create(){
 
 function hitEnemy(player, enemy) {
 
-  if(player.body.touching.down && enemy.body.touching.up){
+  if(player.body.touching.down && enemy.body.touching.up && player.y < enemy.y){
     enemy.destroy()
     player.setVelocity(-150)
   }else{
     player.setTint(0xff0000)
+  }
+}
+
+
+function onPipeCollision(player,pipe){
+  if(player.body.touching.down && pipe.body.touching.up){
+    player.setVelocityY(0)
   }
 }
   
