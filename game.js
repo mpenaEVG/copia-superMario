@@ -76,7 +76,6 @@ function create(){
     .setScale(0.50)
 
   this.isa.setCollideWorldBounds(true)
-  this.isa.setBounce(0.2)
 
 
   this.keys = this.input.keyboard.createCursorKeys()
@@ -113,7 +112,7 @@ function create(){
 
 function hitEnemy(player, enemy) {
 
-  if(player.body.touching.down && enemy.body.touching.up && player.y < enemy.y){
+  if (player.body.touching.down && enemy.body.touching.up && player.y + player.height / 2 < enemy.y){
     enemy.destroy()
     player.setVelocity(-150)
   }else{
