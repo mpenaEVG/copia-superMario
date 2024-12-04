@@ -70,6 +70,12 @@ function create(){
   this.enemigo1.setVelocityX(100)
   this.enemigo1.setGravityY(500)
 
+  this.enemigo2 =  this.physics.add.sprite(200,100,'enemigo1')
+    .setOrigin(0.5,1)
+    .setScale(0.50)
+  this.enemigo2.setCollideWorldBounds(false)
+  this.enemigo2.setVelocityY(100)
+  this.enemigo2.setGravityY(-300)
 
   this.isa =  this.physics.add.sprite(20,100,'isa1')
     .setOrigin(0.5,1)
@@ -102,11 +108,18 @@ function create(){
     })
 
   this.enemigo1.play('enemigo1-walk')
+  this.enemigo2.play('enemigo1-walk')
+
 
   this.physics.add.collider(this.isa,this.ground)
   this.physics.add.collider(this.isa, this.tuberia, onPipeCollision, null, this);
+
   this.physics.add.collider(this.enemigo1,this.tuberia)
   this.physics.add.collider(this.enemigo1,this.ground)
+  this.physics.add.collider(this.enemigo2,this.tuberia)
+
+
+
   this.physics.add.overlap(this.isa, this.enemigo1, hitEnemy, null, this);
 }
 
@@ -144,20 +157,25 @@ function update() {
   if (this.keys.up.isDown && this.isa.body.touching.down) {
     this.isa.setVelocityY(-200)
   }
-if(this.enemigo1 && this.enemigo1.body){
+
+  if(this.enemigo1 && this.enemigo1.body){
 
 
-  if (this.enemigo1.body.blocked.right) {
-        this.enemigo1.setVelocityX(-100);
-        this.enemigo1.flipX = true; // Girar a la izquierda
-    } else if(this.enemigo1.body.blocked.left){
+    if (this.enemigo1.body.blocked.right) {
+          this.enemigo1.setVelocityX(-100)
+          this.enemigo1.flipX = true
+      } else if(this.enemigo1.body.blocked.left){
 
-        this.enemigo1.setVelocityX(100);
-        this.enemigo1.flipX = false; // Girar a la derecha
-    }
+          this.enemigo1.setVelocityX(100)
+          this.enemigo1.flipX = false
+      }
 }
-  this.cameras.main.startFollow(this.isa);
-
-  // Limitar el movimiento de la cámara para que no se salga del mundo
-  this.cameras.main.setBounds(0, 0, 5000, 244); 
+if (this.enemigo2.y <= 40) {
+    this.enemigo2.setVelocityY(100);  // Cambia a velocidad positiva para descender
+  } else if (this.enemigo2.y >= 150) {
+    this.enemigo2.setVelocityY(-100);  // Cambia a velocidad negativa para ascender
+  } 
+    
+  this.cameras.main.startFollow(this.isa)
+  this.cameras.main.setBounds(0, 0, 5000, 244)
 }
