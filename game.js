@@ -40,8 +40,8 @@ function preload(){
 
   this.load.image('isa1', 'assets/entities/isa.png')
   this.load.image('isa2', 'assets/entities/isaandando.png')
-  this.load.image('enemigo1', 'assets/entities/negroQuieto')
-  this.load.image('isa2', 'assets/entities/negroAndando')
+  this.load.image('enemigo1', 'assets/entities/negroQuieto.png')
+  this.load.image('enemigo1-2', 'assets/entities/negroAndando.png')
 
 }
 
@@ -63,13 +63,16 @@ function create(){
     .setScale(1)
     .refreshBody()
 
-
-  this.enemigo 0 this.physics.add.sprite(150,config.height-40,'isa2')
+  this.enemigo1 =  this.physics.add.sprite(20,100,'enemigo1')
+    .setOrigin(1,-2)
     .setScale(0.50)
-    .setOrigin(0,0)
+  this.enemigo1.setCollideWorldBounds(true)
+  this.enemigo1.setVelocityX(100)
+  this.enemigo1.setGravityY(500)
+
 
   this.isa =  this.physics.add.sprite(20,100,'isa1')
-    .setOrigin(0,0)
+    .setOrigin(-8,0)
     .setScale(0.50)
 
   this.isa.setCollideWorldBounds(true)
@@ -88,11 +91,35 @@ function create(){
       repeat: -1
     })
 
-  this.physics.add.collider(this.isa,this.ground)
+  
+  this.anims.create({
+      key:'enemigo1-walk',
+      frames:[
+        {key:'enemigo1'},
+        {key:'enemigo1-2'},
+      ],
+      frameRate:5,
+      repeat: -1
+    })
 
+  this.enemigo1.play('enemigo1-walk')
+
+  this.physics.add.collider(this.isa,this.ground)
   this.physics.add.collider(this.isa,this.tuberia)
+  this.physics.add.collider(this.enemigo1,this.tuberia)
+  this.physics.add.collider(this.enemigo1,this.ground)
+  this.physics.add.overlap(this.isa, this.enemigo1, hitEnemy, null, this);
 }
 
+function hitEnemy(player, enemy) {
+
+  if(player.body.touching.down && enemy.body.touching.up){
+    enemy.destroy()
+    player.setVelocity(-150)
+  }else{
+    player.setTint(0xff0000)
+  }
+}
   
 function update() {
   if (this.keys.left.isDown) {
@@ -111,4 +138,17 @@ function update() {
   if (this.keys.up.isDown && this.isa.body.touching.down) {
     this.isa.setVelocityY(-200)
   }
+if(this.enemigo1 && this.enemigo1.body){
+
+
+  if (this.enemigo1.body.blocked.right) {
+        this.enemigo1.setVelocityX(-100);
+        this.enemigo1.flipX = true; // Girar a la izquierda
+    } else if(this.enemigo1.body.blocked.left){
+
+        this.enemigo1.setVelocityX(100);
+        this.enemigo1.flipX = false; // Girar a la derecha
+    }
+}
+  
 }
