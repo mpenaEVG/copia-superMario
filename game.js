@@ -70,7 +70,7 @@ function create(){
   this.enemigo1.setVelocityX(100)
   this.enemigo1.setGravityY(500)
 
-  this.enemigo2 =  this.physics.add.sprite(200,100,'enemigo1')
+  this.enemigo2 =  this.physics.add.sprite(300,100,'enemigo1')
     .setOrigin(0.5,1)
     .setScale(0.50)
   this.enemigo2.setCollideWorldBounds(false)
@@ -116,7 +116,6 @@ function create(){
 
   this.physics.add.collider(this.enemigo1,this.tuberia)
   this.physics.add.collider(this.enemigo1,this.ground)
-  this.physics.add.collider(this.enemigo2,this.tuberia)
 
 
 
