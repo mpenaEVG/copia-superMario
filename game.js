@@ -43,7 +43,10 @@ function preload(){
   this.load.image('enemigo1', 'assets/entities/box1.1-right1.png')
   this.load.image('enemigo1-2', 'assets/entities/box1.1-left1.png')
   this.load.image('bolaFuego-explota', 'assets/entities/fireball-explosion.png')
-  this.load.image('bolaFuego', 'assets/entities/fireball.png')
+  this.load.spritesheet('bolaFuego', 'assets/entities/fireball.png', {
+    frameWidth: 8,
+    frameHeight: 8
+  });
 }
 
 function create(){
@@ -83,6 +86,13 @@ function create(){
     .setScale(0.50)
 
   this.isa.setCollideWorldBounds(true)
+
+  this.anims.create({
+    key:'bolaFuego-anim',
+    frames: this.anims.generateFrameNumbers('bolaFuego',{start: 0, end:3}),
+    frameRate: 10,
+    repeat: -1
+  })
 
   this.bolasDeFuego = this.physics.add.group({
     defaultKey: 'bolaFuego',
@@ -217,6 +227,7 @@ function lanzarBolaDeFuego(){
     }
 
     bola.setVelocityY(0)
+    bola.play('bolaFuego-anim',true)
 
     this.time.addEvent({
       delay: 1000,
