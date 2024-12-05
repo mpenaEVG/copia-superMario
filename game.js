@@ -134,21 +134,16 @@ function create(){
   this.physics.add.collider(this.enemigo1,this.ground)
 
 
+  this.physics.add.collider(this.bolasDeFuego,this.tuberia)
+  this.physics.add.collider(this.bolasDeFuego,this.ground)
+  this.physics.add.collider(this.bolasDeFuego, this.enemigo1, quemarEnemy, null, this);
+  this.physics.add.collider(this.bolasDeFuego, this.enemigo2, quemarEnemy, null, this);
+
 
   this.physics.add.overlap(this.isa, this.enemigo1, hitEnemy, null, this);
 }
 
-function hitEnemy(player, enemy) {
 
-  if (player.body.touching.down && enemy.body.touching.up && player.y + player.height / 2 < enemy.y){
-    enemy.destroy()
-    player.setVelocity(-150)
-  }else{
-    player.setTint(0xff0000)
-  }
-}
-
-  
 function update() {
   if (this.keys.left.isDown) {
     this.isa.setVelocityX(-100)
@@ -236,6 +231,14 @@ function lanzarBolaDeFuego(){
       },
       callbackScope: this
     })
+
   }
 
+}
+
+
+// No entiendo pq enemy ahora es el primero de los parámetros
+function quemarEnemy(enemy, bola) {
+  enemy.destroy()
+  bola.destroy()
 }
