@@ -42,7 +42,8 @@ function preload(){
   this.load.image('isa2', 'assets/entities/isaandando.png')
   this.load.image('enemigo1', 'assets/entities/box1.1-right1.png')
   this.load.image('enemigo1-2', 'assets/entities/box1.1-left1.png')
-
+  this.load.image('bolaFuego-explota', 'assets/entities/fireball-explosion.png')
+  this.load.image('bolaFuego', 'assets/entities/fireball.png')
 }
 
 function create(){
@@ -83,9 +84,14 @@ function create(){
 
   this.isa.setCollideWorldBounds(true)
 
+  this.bolasDeFuego = this.physics.add.group({
+    defaultKey: 'bolaFuego',
+    maxSize: 10
+  })
 
   this.keys = this.input.keyboard.createCursorKeys()
- 
+  this.keys.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+
   this.anims.create({
       key:'mario-walk',
       frames:[
@@ -132,12 +138,6 @@ function hitEnemy(player, enemy) {
   }
 }
 
-
-function onPipeCollision(player,pipe){
-  if(player.body.touching.down && pipe.body.touching.up){
-    player.setVelocityY(0)
-  }
-}
   
 function update() {
   if (this.keys.left.isDown) {
@@ -174,7 +174,57 @@ if (this.enemigo2.y <= 40) {
   } else if (this.enemigo2.y >= 150) {
     this.enemigo2.setVelocityY(-100);  // Cambia a velocidad negativa para ascender
   } 
+
+if(Phaser.Input.Keyboard.JustDown(this.keys.space)){
+  lanzarBolaDeFuego.call(this)
+}
     
   this.cameras.main.startFollow(this.isa)
   this.cameras.main.setBounds(0, 0, 5000, 244)
+}
+
+
+function hitEnemy(player, enemy) {
+
+  if (player.body.touching.down && enemy.body.touching.up && player.y + player.height / 2 < enemy.y){
+    enemy.destroy()
+    player.setVelocity(-150)
+  }else{
+    player.setTint(0xff0000)
+  }
+}
+
+
+function onPipeCollision(player,pipe){
+  if(player.body.touching.down && pipe.body.touching.up){
+    player.setVelocityY(0)
+  }
+}
+
+
+function lanzarBolaDeFuego(){
+  const bola = this.bolasDeFuego.get()
+
+  if(bola){
+
+    bola.setActive(true).setVisible(true)
+    bola.setPosition(this.isa.x,this.isa.y-20)
+
+    if(this.isa.flipX){
+      bola.setVelocityX(-300)
+    }else{
+      bola.setVelocityX(300)
+    }
+
+    bola.setVelocityY(0)
+
+    this.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        bola.setActive(false).setVisible(false)
+      },
+      callbackScope: this
+    })
+  }
+
 }
