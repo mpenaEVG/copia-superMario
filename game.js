@@ -53,6 +53,18 @@ function preload(){
 }
 
 function create(){
+  
+  this.score = 0
+
+
+  this.scoreText = this.add.text(10,10,'POINTS: 0',{
+    fontFamily: 'SuperMario',
+    fontSize: '8px',
+    color: "#fff",
+    stroke: "#000",
+    strokeThickness: 2
+  }).setScrollFactor(0)
+    .setResolution(19)
 
   this.add.image(100,50,'cloud1')
     .setOrigin(0,0)
@@ -216,6 +228,7 @@ function hitEnemy(player, enemy) {
 
   if (player.body.touching.down && enemy.body.touching.up && player.y + player.height / 2 < enemy.y){
     enemy.destroy()
+    updatePuntuacion.call(this, 100);
     player.setVelocity(-150)
   }else{
     player.setTint(0xff0000)
@@ -264,10 +277,16 @@ function lanzarBolaDeFuego(){
 // No entiendo pq enemy ahora es el primero de los parámetros
 function quemarEnemy(enemy, bola) {
   enemy.destroy()
+  updatePuntuacion.call(this, 100);
   bola.destroy()
 }
 
 function piromano(isa,flor){
     this.tieneFlorFluego = true
     flor.destroy()
+}
+
+function updatePuntuacion(puntos){
+  this.score += puntos
+  this.scoreText.setText(`POINTS: ${this.score}`)
 }
