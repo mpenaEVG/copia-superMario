@@ -231,7 +231,10 @@ function hitEnemy(player, enemy) {
     updatePuntuacion.call(this, 100);
     player.setVelocity(-150)
   }else{
-    player.setTint(0xff0000)
+
+   if (!player.isBlinking) {
+      parpadeoJugador.call(this, player);
+    } 
   }
 }
 
@@ -289,4 +292,39 @@ function piromano(isa,flor){
 function updatePuntuacion(puntos){
   this.score += puntos
   this.scoreText.setText(`POINTS: ${this.score}`)
+}
+
+function parpadeoJugador(player){
+
+  const colorOriginal =0xffffff 
+  const colorRojo = 0xff0000
+
+  player.isBlinking = true
+  player.setTint(colorRojo)
+
+  let timer = 0 
+  const duracionParpadeo = 300
+
+  const intervaloParpadeo = this.time.addEvent({
+    delay: 50,
+    callback: () =>{
+
+      if (timer % 2 === 0){
+        player.setTint(colorRojo)
+      }else{
+        player.setTint(colorOriginal)
+      }
+      timer++
+    },
+    repeat: Math.floor(duracionParpadeo / 50) -1
+  })
+  
+  this.time.addEvent({
+    delay: duracionParpadeo,
+    callback: () =>{
+      player.setTint(colorOriginal)
+      intervaloParpadeo.remove()
+      player.isBlinking = false
+    }
+  })
 }
