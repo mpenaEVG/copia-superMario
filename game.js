@@ -1,5 +1,3 @@
-
-
 const config =  {
   type: Phaser.AUTO,
   width: 256,
@@ -46,7 +44,12 @@ function preload(){
   this.load.spritesheet('bolaFuego', 'assets/entities/fireball.png', {
     frameWidth: 8,
     frameHeight: 8
-  });
+  })
+
+  this.load.spritesheet('flor-fuego', 'assets/collectibles/underground/fire-flower.png',{
+    frameWidth: 16,
+    frameHeight: 16
+  })
 }
 
 function create(){
@@ -54,7 +57,7 @@ function create(){
   this.add.image(100,50,'cloud1')
     .setOrigin(0,0)
     .setScale(0.15)
-
+  
   this.ground = this.physics.add.staticGroup()
   this.ground 
     .create(config.width/2, config.height-16,'floorbricks')
@@ -66,6 +69,20 @@ function create(){
     .create(150,config.height-70,'pipe')
     .setScale(1)
     .refreshBody()
+
+  this.florFuego = this.physics.add.sprite(150,config.height-102,'flor-fuego')
+    .setScale(1)
+    .refreshBody()
+
+  this.tieneFlorFluego = false
+
+  this.anims.create({
+    key:'florFuego-anim',
+    frames: this.anims.generateFrameNumbers('flor-fuego',{start:0,end:4}),
+    frameRate: 10,
+    repeat: -1
+  })
+  this.florFuego.play('florFuego-anim', true)
 
   this.enemigo1 =  this.physics.add.sprite(0,200,'enemigo1')
     .setOrigin(0.5,1)
@@ -140,6 +157,10 @@ function create(){
   this.physics.add.collider(this.bolasDeFuego, this.enemigo2, quemarEnemy, null, this);
 
 
+  this.physics.add.collider(this.florFuego,this.tuberia)
+  this.physics.add.overlap(this.isa, this.florFuego, piromano, null, this);
+
+
   this.physics.add.overlap(this.isa, this.enemigo1, hitEnemy, null, this);
 }
 
@@ -175,13 +196,15 @@ function update() {
       }
 }
 if (this.enemigo2.y <= 40) {
-    this.enemigo2.setVelocityY(100);  // Cambia a velocidad positiva para descender
+    this.enemigo2.setVelocityY(100)  // Cambia a velocidad positiva para descender
   } else if (this.enemigo2.y >= 150) {
-    this.enemigo2.setVelocityY(-100);  // Cambia a velocidad negativa para ascender
+    this.enemigo2.setVelocityY(-100)  // Cambia a velocidad negativa para ascender
   } 
 
 if(Phaser.Input.Keyboard.JustDown(this.keys.space)){
-  lanzarBolaDeFuego.call(this)
+  if(this.tieneFlorFluego){
+   lanzarBolaDeFuego.call(this)
+  }
 }
     
   this.cameras.main.startFollow(this.isa)
@@ -210,6 +233,7 @@ function onPipeCollision(player,pipe){
 function lanzarBolaDeFuego(){
   const bola = this.bolasDeFuego.get()
 
+  if(!this.tieneFlorFluego) return
   if(bola){
 
     bola.setActive(true).setVisible(true)
@@ -225,7 +249,7 @@ function lanzarBolaDeFuego(){
     bola.play('bolaFuego-anim',true)
 
     this.time.addEvent({
-      delay: 1000,
+      delay: 500,
       callback: () => {
         bola.setActive(false).setVisible(false)
       },
@@ -241,4 +265,9 @@ function lanzarBolaDeFuego(){
 function quemarEnemy(enemy, bola) {
   enemy.destroy()
   bola.destroy()
+}
+
+function piromano(isa,flor){
+    this.tieneFlorFluego = true
+    flor.destroy()
 }
