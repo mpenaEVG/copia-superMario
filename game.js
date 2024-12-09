@@ -9,7 +9,7 @@ const config =  {
     default: 'arcade',
     arcade: {
       gravity: {y: 300},
-      debug: false
+      debug: true
     }
   },
   scene: {
@@ -55,7 +55,7 @@ function preload(){
 function create(){
   
   this.score = 0
-
+  this.vidas = 3
 
   this.scoreText = this.add.text(10,10,'POINTS: 0',{
     fontFamily: 'SuperMario',
@@ -65,6 +65,17 @@ function create(){
     strokeThickness: 2
   }).setScrollFactor(0)
     .setResolution(19)
+
+  this.vidasText = this.add.text(200,10,'VIDAS: 3',{
+    fontFamily: 'SuperMario',
+    fontSize: '8px',
+    color: "#fff",
+    stroke: "#000",
+    strokeThickness: 2
+  }).setScrollFactor(0)
+    .setResolution(19)
+
+
 
   this.add.image(100,50,'cloud1')
     .setOrigin(0,0)
