@@ -361,3 +361,36 @@ function resetPlayer() {
   this.isa.setPosition(20, 100);
   this.isa.setVelocity(0);
 }
+
+function mostrarGameOver() {
+  this.physics.pause()
+  
+  this.add.text(
+    config.width / 2, 100, 
+    '¡Game Over!', {
+      fontFamily: 'SuperMario',
+      fontSize: '30px',
+      color: '#ff0000',
+      align: 'center',
+      stroke: '#000',
+      strokeThickness: 4
+    }
+  ).setOrigin(0.5)
+
+  const restartButton = this.add.text(
+    config.width / 2, 150, 
+    'Reiniciar', {
+      fontFamily: 'SuperMario',
+      fontSize: '10px',
+      color: '#ffffff',
+      backgroundColor: '#000000',
+      padding: { x: 10, y: 5 }
+    }
+  ).setOrigin(0.5).setInteractive().setResolution(19)
+
+  restartButton.on('pointerdown', () => {
+    this.physics.resume()
+    restartButton.destroy()
+    this.scene.restart()
+  })
+}
