@@ -1,3 +1,8 @@
+let GameState = {
+  score: 0,
+  vidas: 3
+}
+
 const config =  {
   type: Phaser.AUTO,
   width: 256,
@@ -9,7 +14,7 @@ const config =  {
     default: 'arcade',
     arcade: {
       gravity: {y: 300},
-      debug: false
+      debug: true
     }
   },
   scene: {
@@ -54,8 +59,10 @@ function preload(){
 
 function create(){
   
-  this.score = 0
+ 
 
+  this.vidas = GameState.vidas
+  this.score = GameState.score
 
   this.scoreText = this.add.text(10,10,'POINTS: 0',{
     fontFamily: 'SuperMario',
@@ -65,6 +72,17 @@ function create(){
     strokeThickness: 2
   }).setScrollFactor(0)
     .setResolution(19)
+
+  this.vidasText = this.add.text(200,10,'VIDAS: 3',{
+    fontFamily: 'SuperMario',
+    fontSize: '8px',
+    color: "#fff",
+    stroke: "#000",
+    strokeThickness: 2
+  }).setScrollFactor(0)
+    .setResolution(19)
+
+
 
   this.add.image(100,50,'cloud1')
     .setOrigin(0,0)
@@ -228,13 +246,22 @@ function hitEnemy(player, enemy) {
 
   if (player.body.touching.down && enemy.body.touching.up && player.y + player.height / 2 < enemy.y){
     enemy.destroy()
-    updatePuntuacion.call(this, 100);
+    updatePuntuacion.call(this, 100)
+
     player.setVelocity(-150)
   }else{
-
    if (!player.isBlinking) {
-      parpadeoJugador.call(this, player);
+      parpadeoJugador.call(this, player)
+      this.vidas -= 1
+      this.vidasText.setText(`VIDAS: ${this.vidas}`)
+      
+      if (this.vidas > 0) {
+      resetPlayer.call(this)
+      } else {
+        mostrarGameOver.call(this)
+      } 
     } 
+
   }
 }
 
@@ -290,8 +317,8 @@ function piromano(isa,flor){
 }
 
 function updatePuntuacion(puntos){
-  this.score += puntos
-  this.scoreText.setText(`POINTS: ${this.score}`)
+  GameState.score += puntos
+  this.scoreText.setText(`POINTS: ${GameState.score}`)
 }
 
 function parpadeoJugador(player){
@@ -326,5 +353,44 @@ function parpadeoJugador(player){
       intervaloParpadeo.remove()
       player.isBlinking = false
     }
+  })
+}
+
+
+function resetPlayer() {
+  this.isa.setPosition(20, 100);
+  this.isa.setVelocity(0);
+}
+
+function mostrarGameOver() {
+  this.physics.pause()
+  
+  this.add.text(
+    config.width / 2, 100, 
+    '¡Game Over!', {
+      fontFamily: 'SuperMario',
+      fontSize: '30px',
+      color: '#ff0000',
+      align: 'center',
+      stroke: '#000',
+      strokeThickness: 4
+    }
+  ).setOrigin(0.5)
+
+  const restartButton = this.add.text(
+    config.width / 2, 150, 
+    'Reiniciar', {
+      fontFamily: 'SuperMario',
+      fontSize: '10px',
+      color: '#ffffff',
+      backgroundColor: '#000000',
+      padding: { x: 10, y: 5 }
+    }
+  ).setOrigin(0.5).setInteractive().setResolution(19)
+
+  restartButton.on('pointerdown', () => {
+    this.physics.resume()
+    restartButton.destroy()
+    this.scene.restart()
   })
 }
